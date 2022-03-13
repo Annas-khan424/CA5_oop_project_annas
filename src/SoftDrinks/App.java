@@ -10,8 +10,7 @@ import java.util.PriorityQueue;
  */
 
 public class App {
-//    Drink drink;
-//    WholeSaler wholeSaler;
+
     List<Drink> drinks;
     Map<String, WholeSaler> mapOfOrigin;
     Map<Integer, Drink> StockNumMap;
@@ -205,7 +204,7 @@ public class App {
         // remove and display one element
         System.out.println("Remove and display a single element");
         Drink d = queue.remove();
-        System.out.println(d.toString() + "  -  Total Amount for Stock Available: €" + (d.getPrice()*d.getStockAvailable()));
+        System.out.println(d.toString() + "  -  Total Price for Stock Available: €" + (d.getPrice()*d.getStockAvailable()));
 
         // add one top-priority element
         queue.add(drinks.get(4));
