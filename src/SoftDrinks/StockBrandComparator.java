@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 public class StockBrandComparator implements Comparator<Drink> {
 
-    //compare integer stockLvl withing Brand
+    //compare integer stockLvl withing   Brand
     @Override
     public int compare(Drink d1, Drink d2)
     {
