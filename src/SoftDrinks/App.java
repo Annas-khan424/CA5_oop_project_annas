@@ -213,7 +213,7 @@ public class App {
         System.out.println("\nRemove and display all elements");
         while ( !queue.isEmpty() ) {
             Drink r = queue.remove();
-            System.out.println(r.toString() + "\t-\tPrice per ml: €" + (Double.valueOf(Math.round((r.getPrice()/r.getStockAvailable()) * 100)) / 100) );
+            System.out.println(r.toString() + "\t-\tTotal Price for Stock Available: €" + (Double.valueOf(Math.round((r.getPrice()*r.getStockAvailable()) * 100)) / 100) );
         }
     }
 
