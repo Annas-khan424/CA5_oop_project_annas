@@ -1,4 +1,4 @@
-package SoftDrinks.BusinessOblect;
+package SoftDrinks;
 import SoftDrinks.DTOs.Drink;
 
 import java.util.Comparator;
