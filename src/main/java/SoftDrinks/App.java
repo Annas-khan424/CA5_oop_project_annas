@@ -1,4 +1,4 @@
-package SoftDrinks.BusinessOblect;
+package SoftDrinks;
 
 import java.io.IOException;
 import java.util.*;
@@ -114,8 +114,38 @@ public class App {
                         priorityQueueSequence();
                         break;
                     case PRIORITYQUEUE_BRAND_STOCK:
-                        System.out.println("Priority queue, sorting by brand name alphabetically and stockNum, low to high\n");
+                        System.out.println("Priority queue, sorting by brand name alphabetically \n");
                         displayTwoFieldQueue();
+                        break;
+                    case PULL_ALL_DRINK_FROM_DB:
+                        findAllDrink();
+                        break;
+                    case PULL_DRINK_FROM_DB_BY_ID:
+                        System.out.println("Please enter Drink ID: ");
+                        String idTag = keyboard.nextLine();
+                        findDrinkByID(idTag);
+                        break;
+                    case DELETE_DRINK_FROM_DB_BY_ID:
+                        System.out.println("Please enter Drink ID: ");
+                        String idForDeletion = keyboard.nextLine();
+                        deleteDrinkByID(idForDeletion);
+                        break;
+                    case ADD_DRINK_TO_DB:
+                        addDrinkToDB();
+                        break;
+                    case LIST_FILTERED:
+                        System.out.println("Please enter maximum Drink price: ");
+                        float filterPrice = keyboard.nextFloat();
+                        keyboard.nextLine();
+                        listFilteredDrink(filterPrice);
+                        break;
+                    case PULL_ALL_DRINK_FROM_DB_JSON:
+                        findAllDrinkJSON();
+                        break;
+                    case PULL_DRINK_FROM_DB_BY_ID_JSON:
+                        System.out.println("Please enter Drink ID: ");
+                        String idTag2 = keyboard.nextLine();
+                        findDrinkByIDJSON(idTag2);
                         break;
                     case EXIT:
                         System.out.println("Menu Exited");
@@ -310,6 +340,32 @@ public class App {
         }
     }
 
+    public void listFilteredDrink(float x)
+    {
+        System.out.println("Showing all Drink sub " + x + " Euro, ordered by (price/ml), high->low");
+
+        try {
+            listDBFiltered = IDrinkDao.findAllDrinkSubXEuro(x);
+            ArrayList<Drink> fetchedFilteredArrList = new ArrayList<Drink>();
+            fetchedFilteredArrList.addAll(listDBFiltered);
+
+            for(int i = 0; i < fetchedFilteredArrList.size(); i++)
+            {
+                queueDBFiltered.add(fetchedFilteredArrList.get(i));
+            }
+            while ( !queueDBFiltered.isEmpty() ) {
+                Drink r = queueDBFiltered.remove();
+                System.out.println(r.toString() + "\t-\tPrice per ml: €" + Double.valueOf(Math.round((r.getPrice()*r.getStockAvailable()) * 100)) / 100);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+
     public void findDrinkByIDJSON(String id)
     {
         try
@@ -405,29 +461,6 @@ public class App {
 
     }
 
-    public void listFilteredDrink(float x)
-    {
-        System.out.println("Showing all Drink sub " + x + " Euro, ordered by (price/ml), high->low");
-
-        try {
-            listDBFiltered = IDrinkDao.findAllDrinkSubXEuro(x);
-            ArrayList<Drink> fetchedFilteredArrList = new ArrayList<Drink>();
-            fetchedFilteredArrList.addAll(listDBFiltered);
-
-            for(int i = 0; i < fetchedFilteredArrList.size(); i++)
-            {
-                queueDBFiltered.add(fetchedFilteredArrList.get(i));
-            }
-            while ( !queueDBFiltered.isEmpty() ) {
-                Drink r = queueDBFiltered.remove();
-                System.out.println(r.toString() + "\t-\tPrice per ml: €" + (Double.valueOf(Math.round((r.getPrice()*r.getStockAvailable()) * 100)) / 100) );
-            }
-        }
-        catch( DaoException e )
-        {
-            e.printStackTrace();
-        }
-    }
 
 
 
