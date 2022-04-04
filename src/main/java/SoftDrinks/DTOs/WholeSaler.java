@@ -1,4 +1,4 @@
-package SoftDrinks;
+package SoftDrinks.DTOs;
 
 public class WholeSaler {
     String phone;

@@ -1,7 +1,13 @@
-package SoftDrinks;
+package SoftDrinks.BusinessOblect;
 
 import java.io.IOException;
 import java.util.*;
+
+import SoftDrinks.DAOs.MySqlDrinkDao;
+import SoftDrinks.DAOs.DrinkDaoInterface;
+import SoftDrinks.DTOs.Drink;
+import SoftDrinks.DTOs.WholeSaler;
+import SoftDrinks.Exceptions.DaoException;
 import java.util.PriorityQueue;
 
 /**
@@ -12,10 +18,12 @@ import java.util.PriorityQueue;
 public class App {
 
     List<Drink> drinks;
-    Map<String, WholeSaler> mapOfOrigin;
+    Map<Integer, WholeSaler> mapOfOrigin;
     Map<Integer, Drink> StockNumMap;
     PriorityQueue<Drink> queue;
     PriorityQueue<Drink> twoFieldQueue;
+    DrinkDaoInterface IDrinkDao = new MySqlDrinkDao();
+
 
 
     public static void main(String[] args)
@@ -28,7 +36,7 @@ public class App {
         System.out.println("OOP Project(CA5) - Soft Drinks");
 
         this.drinks = new ArrayList<>();
-        this.mapOfOrigin = new HashMap<>();
+        this.mapOfOrigin = new HashMap<Integer, WholeSaler>();
         this.StockNumMap = new TreeMap<>();
         this.queue = new PriorityQueue<>();
         this.twoFieldQueue = new PriorityQueue<>(new StockBrandComparator());
@@ -110,16 +118,16 @@ public class App {
     }
     private void initialize()
     {
-        Drink d1 = new Drink("1","Coca-Cola","Coke                 ",300,1.30,200);//260
-        Drink d2 = new Drink("2","Coca-Cola","Coke-zero            ",300,1.30,670);//871
-        Drink d3 = new Drink("3","Pepsi    ","Pepsi Wild Cherry    ",500,4.30,400);//1720
-        Drink d4 = new Drink("4","Red Bull ","Red Bull Coconut     ",300,2.30,800);//1840
-        Drink d5 = new Drink("5","Sprite   ","Sprite Cherry        ",500,6.90,700);//4830
-        Drink d6 = new Drink("6","Pepsi    ","Pepsi                ",300,5.30,840);//4452
-        Drink d7 = new Drink("7","Monster  ","Zero-Sugar Ultra Red ",500,3.40,20);//68
-        Drink d8 = new Drink("8","Fanta    ","Fanta Lemon          ",350,2.89,50);//144.5
-        Drink d9 = new Drink("9","Monster  ","Mango Loco           ",500,3.00,100);//300
-        Drink d10 = new Drink("10","Schweppes","Russchian Pink Soda ",200,2.00,10);//200
+        Drink d1 = new Drink(1,"Coca-Cola","Coke                 ",300,1.30,200);//260
+        Drink d2 = new Drink(2,"Coca-Cola","Coke-zero            ",300,1.30,670);//871
+        Drink d3 = new Drink(3,"Pepsi    ","Pepsi Wild Cherry    ",500,4.30,400);//1720
+        Drink d4 = new Drink(4,"Red Bull ","Red Bull Coconut     ",300,2.30,800);//1840
+        Drink d5 = new Drink(5,"Sprite   ","Sprite Cherry        ",500,6.90,700);//4830
+        Drink d6 = new Drink(6,"Pepsi    ","Pepsi                ",300,5.30,840);//4452
+        Drink d7 = new Drink(7,"Monster  ","Zero-Sugar Ultra Red ",500,3.40,20);//68
+        Drink d8 = new Drink(8,"Fanta    ","Fanta Lemon          ",350,2.89,50);//144.5
+        Drink d9 = new Drink(9,"Monster  ","Mango Loco           ",500,3.00,100);//300
+        Drink d10 = new Drink(10,"Schweppes","Russchian Pink Soda ",200,2.00,10);//200
 
         WholeSaler ws1 = new WholeSaler("3928436", "995 Anderson Rest,Missouri", "USA");
         WholeSaler ws2 = new WholeSaler("9562098", "207 O'Connell Divide,Maryland", "England");
@@ -139,7 +147,7 @@ public class App {
         drinks.add(d9);
         drinks.add(d10);
 
-        mapOfOrigin.put(d1.get_id(), ws1);
+        mapOfOrigin.put(d1.get_id(), ws2);
         mapOfOrigin.put(d2.get_id(), ws4);
         mapOfOrigin.put(d3.get_id(), ws2);
         mapOfOrigin.put(d4.get_id(), ws1);
@@ -221,6 +229,27 @@ public class App {
     {
         while ( !twoFieldQueue.isEmpty() ) {
             System.out.println(twoFieldQueue.remove());
+        }
+    }
+
+    public void findAllPerfume()
+    {
+        try
+        {
+            System.out.println("\nCall findAllPerfumes()");
+            List<Drink> Drinks = IDrinkDao.findAllDrink();
+
+            if( Drinks.isEmpty() )
+                System.out.println("There are no Users");
+            else {
+                for (Drink drink : Drinks)
+                    System.out.println(drink.toString());
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
         }
     }
 

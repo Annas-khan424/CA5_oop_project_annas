@@ -1,18 +1,17 @@
-package SoftDrinks;
+package SoftDrinks.DTOs;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class  Drink implements Comparable<Drink>{
 
-    private String _id;
+    private int _id;
     private String brand;
     private String name;
     private int size;
     private double price;
     private int stockAvailable;
 
-    public Drink(String _id, String brand, String name, int size, double price, int stockAvailable)
+    public Drink(int _id, String brand, String name, int size, double price, int stockAvailable)
     {
         this._id = _id;
         this.brand = brand;
@@ -22,7 +21,7 @@ public class  Drink implements Comparable<Drink>{
         this.stockAvailable = stockAvailable;
     }
 
-    public Drink(String _id, String brand, String name)
+    public Drink(int _id, String brand, String name)
     {
         this._id = _id;
         this.brand = brand;
@@ -61,9 +60,9 @@ public class  Drink implements Comparable<Drink>{
         }
     }
 
-    public String get_id() {return _id;}
+    public int get_id() {return _id;}
 
-    public void set_id(String _id) {this._id = _id;}
+    public void set_id(int _id) {this._id = _id;}
 
     public String getBrand() {return brand;}
 
@@ -90,7 +89,7 @@ public class  Drink implements Comparable<Drink>{
         if (this == o) return true;
         if (!(o instanceof Drink)) return false;
         Drink drink = (Drink) o;
-        return get_id().equals(drink.get_id()) && getBrand().equals(drink.getBrand()) && getName().equals(drink.getName());
+        return get_id() == drink.get_id() && getBrand().equals(drink.getBrand()) && getName().equals(drink.getName());
     }
 
     @Override
