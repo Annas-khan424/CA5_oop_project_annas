@@ -22,6 +22,8 @@ public class App {
     Map<Integer, Drink> StockNumMap;
     PriorityQueue<Drink> queue;
     PriorityQueue<Drink> twoFieldQueue;
+    PriorityQueue<Drink> queueDBFiltered;
+    List<Drink> listDBFiltered;
     DrinkDaoInterface IDrinkDao = new MySqlDrinkDao();
 
 
@@ -59,15 +61,30 @@ public class App {
                 + "3. display the objects from the TreeMap\n"
                 + "4. PriorityQueue Sequence Simulation\n"
                 + "5. PriorityQueue Two-Field (stockAva, Brands)\n"
-                + "6. Exit\n"
-                + "Enter Option [1,6]";
+                + "6. Find all Drink from database\n"
+                + "7. Find one Drink from database by ID\n"
+                + "8. Delete one Drink from database by ID\n"
+                + "9. Add Drink to database\n"
+                + "10. List Drink filtered by price\n"
+                + "11. Find all Drink from database as JSON\n"
+                + "12. Find one Drink from database by ID as JSON\n"
+                + "13. Exit\n"
+                + "Enter Option [1,13]";
+
 
         final int VIEW_DRINKS = 1;
         final int RETRIEVE_WHOLESALER_DRINKS = 2;
         final int DISPLAY_OBJECTS_FROM_TREEMAP = 3;
         final int PRIORITYQUEUE_SEQUENCE_SIMULATION = 4;
         final int PRIORITYQUEUE_BRAND_STOCK = 5;
-        final int EXIT = 6;
+        final int PULL_ALL_DRINK_FROM_DB = 6;
+        final int PULL_DRINK_FROM_DB_BY_ID = 7;
+        final int DELETE_DRINK_FROM_DB_BY_ID = 8;
+        final int ADD_DRINK_TO_DB = 9;
+        final int LIST_FILTERED = 10;
+        final int PULL_ALL_DRINK_FROM_DB_JSON = 11;
+        final int PULL_DRINK_FROM_DB_BY_ID_JSON = 12;
+        final int EXIT = 13;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -232,11 +249,11 @@ public class App {
         }
     }
 
-    public void findAllPerfume()
+    public void findAllDrink()
     {
         try
         {
-            System.out.println("\nCall findAllPerfumes()");
+            System.out.println("\nCall findAllDrink()");
             List<Drink> Drinks = IDrinkDao.findAllDrink();
 
             if( Drinks.isEmpty() )
@@ -252,5 +269,166 @@ public class App {
             e.printStackTrace();
         }
     }
+
+    public void findAllDrinkJSON()
+    {
+        try
+        {
+            System.out.println("\nCall findAllDrinkJSON()");
+            String jsonString = IDrinkDao.findAllDrinkJSON();
+
+            if(jsonString.equals("null"))
+                System.out.println("No Drink found");
+            else {
+                System.out.println(jsonString);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void findDrinkByID(String id)
+    {
+        try
+        {
+            System.out.println("findDrinkByID()");
+            Drink drink = IDrinkDao.findDrinkByID(id);
+
+            if(drink == null)
+                System.out.println("No drink exists with ID: " + id);
+            else {
+                System.out.println(drink);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void findDrinkByIDJSON(String id)
+    {
+        try
+        {
+            System.out.println("findDrinkByIDJSON()");
+            String jsonString = IDrinkDao.findDrinkByIDJSON(id);
+
+            if(jsonString.equals("null"))
+                System.out.println("No Drink found");
+            else {
+                System.out.println(jsonString);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteDrinkByID(String id)
+    {
+        try
+        {
+            System.out.println("deleteDrinkeByID()");
+            Drink drink1 = IDrinkDao.deleteDrinkByID(id);
+            IDrinkDao.deleteDrinkByID(id);
+            Drink drink2 = IDrinkDao.deleteDrinkByID(id);
+
+            if(drink1 != null && drink2 == null)
+            {
+                System.out.println("Drink Deleted Successfully");
+            }
+            else if(drink1 == null)
+            {
+                System.out.println("The Drink with id = " + id + " wasn't in the database");
+            }
+            else {
+                System.out.println("Drink deletion has failed");
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void addDrinkToDB()
+    {
+        String brand = "";
+        String name = "";
+        int enteredSize = 0;
+        float enteredPrice = -1;
+        int enteredStockAvalible = -1;
+        Scanner kb = new Scanner(System.in);
+
+
+        while(brand == "") {
+            System.out.println("Please enter Drink Brand: ");
+            brand = kb.nextLine();
+        };
+
+        while(name == "") {
+            System.out.println("Please enter Drink Name: ");
+            name = kb.nextLine();
+        };
+
+        while(enteredSize < 1) {
+            System.out.println("Please enter Drink Size (ml): ");
+            enteredSize = kb.nextInt();
+        };
+
+        while(enteredPrice <= 0) {
+            System.out.println("Please enter Drink price: ");
+            enteredPrice = kb.nextFloat();
+        };
+        ;
+
+        while(enteredStockAvalible <= 0) {
+            System.out.println("Please enter Drink Stock Avalible: ");
+            enteredStockAvalible = kb.nextInt();
+        };
+
+        try {
+            IDrinkDao.addDrink(brand, name, enteredSize, enteredPrice,  enteredStockAvalible);
+            System.out.println("Added Successfully");
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void listFilteredDrink(float x)
+    {
+        System.out.println("Showing all Drink sub " + x + " Euro, ordered by (price/ml), high->low");
+
+        try {
+            listDBFiltered = IDrinkDao.findAllDrinkSubXEuro(x);
+            ArrayList<Drink> fetchedFilteredArrList = new ArrayList<Drink>();
+            fetchedFilteredArrList.addAll(listDBFiltered);
+
+            for(int i = 0; i < fetchedFilteredArrList.size(); i++)
+            {
+                queueDBFiltered.add(fetchedFilteredArrList.get(i));
+            }
+            while ( !queueDBFiltered.isEmpty() ) {
+                Drink r = queueDBFiltered.remove();
+                System.out.println(r.toString() + "\t-\tPrice per ml: €" + (Double.valueOf(Math.round((r.getPrice()*r.getStockAvailable()) * 100)) / 100) );
+            }
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+
 
 }
