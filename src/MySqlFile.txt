@@ -1,0 +1,28 @@
+DROP DATABASE IF EXISTS `cool_drinks`;
+CREATE DATABASE `cool_drinks`;
+USE `cool_drinks`;
+DROP TABLE IF EXISTS `drink`;
+
+CREATE TABLE `drink` (
+  `_id` int(11) NOT NULL AUTO_INCREMENT,
+  `brand` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `size` INT(4) NOT NULL,
+  `price` FLOAT(4,2) NOT NULL,
+  `stockAvailable` int(5) NOT NULL,
+  PRIMARY KEY  (`_id`)
+  );
+
+INSERT INTO drink VALUES
+(1,"Coca-cola", "Coke", 300, 1.30, 200),
+(2,"Coca-cola", "Coke-zero", 300, 1.30, 670),
+(3,"Pepsi", "Pepsi Wild Cherry", 500, 4.30, 400),
+(4,"Red Bull", "Red Bull Coconut", 300, 3.30, 800),
+(5,"Sprite", "Sprite Cherry", 500, 6.90, 700),
+(6,"Pepsi", "Pepsi", 300, 5.30, 840),
+(7,"Monster", "Zero-Sugar Ultra Red", 500, 3.40, 20),
+(8,"Fanta", "Fanta Lemon", 350, 2.89, 50),
+(9,"Monster", "Mango Loco", 500, 3.00, 100),
+(10,"Schweppes", "Russchian Pink Soda", 200, 2.00, 10);
+
+
