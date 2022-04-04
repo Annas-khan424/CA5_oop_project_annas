@@ -1,16 +1,16 @@
 In the menu inside App.java:
 
-switch case - VIEW_DRINKS:
+fro case - VIEW_DRINKS:
 used an arraylist and iterated through all the contents of the arraylist - O(n)
 
-switch case - RETRIEVE_WHOLESALER_DRINKS:
+for case - RETRIEVE_WHOLESALER_DRINKS:
 I used a hashmap and just did one operation - O (1)
 
-switch case - DISPLAY_OBJECTS_FROM_TREEMAP:
+for case - DISPLAY_OBJECTS_FROM_TREEMAP:
 used a treemap -  O(logN)
 
-switch case - PRIORITYQUEUE_SEQUENCE_SIMULATION:
+for case - PRIORITYQUEUE_SEQUENCE_SIMULATION:
 used a priority queue -  O(log N)
 
-switch case - PRIORITYQUEUE_BRAND_STOCK:
+for case - PRIORITYQUEUE_BRAND_STOCK:
 used a priority queue -  O(log N)
