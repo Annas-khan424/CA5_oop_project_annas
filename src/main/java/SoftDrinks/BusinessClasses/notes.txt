@@ -1,6 +1,6 @@
 In the menu inside App.java:
 
-fro case - VIEW_DRINKS:
+for case - VIEW_DRINKS:
 used an arraylist and iterated through all the contents of the arraylist - O(n)
 
 for case - RETRIEVE_WHOLESALER_DRINKS:

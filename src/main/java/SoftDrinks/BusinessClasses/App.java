@@ -1,4 +1,4 @@
-package SoftDrinks;
+package SoftDrinks.BusinessClasses;
 
 import java.io.IOException;
 import java.util.*;
@@ -8,6 +8,7 @@ import SoftDrinks.DAOs.DrinkDaoInterface;
 import SoftDrinks.DTOs.Drink;
 import SoftDrinks.DTOs.WholeSaler;
 import SoftDrinks.Exceptions.DaoException;
+
 import java.util.PriorityQueue;
 
 /**
