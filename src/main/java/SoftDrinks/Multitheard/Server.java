@@ -23,13 +23,17 @@ public class Server {
     Map<Integer, WholeSaler> mapOfOrigin;
     Map<Integer, Drink> StockNumMap;
     PriorityQueue<Drink> queue;
+    PriorityQueue<Drink> queueDBFiltered;
     PriorityQueue<Drink> twoFieldQueue;
     List<Drink> listDBFiltered;
     DrinkDaoInterface IDrinkDao = new MySqlDrinkDao();
+
+
+
     public static void main(String[] args)
     {
-        App app = new App();
-        app.start();
+        Server server = new Server();
+        server.start();
     }
 
     public void start() {
@@ -39,6 +43,7 @@ public class Server {
         this.mapOfOrigin = new HashMap<Integer, WholeSaler>();
         this.StockNumMap = new TreeMap<>();
         this.queue = new PriorityQueue<>();
+        this.queueDBFiltered = new PriorityQueue<>();
         this.twoFieldQueue = new PriorityQueue<>(new StockBrandComparator());
         initialize();
         try
@@ -130,8 +135,8 @@ public class Server {
 
                         socketWriter.println(findDrinkByIDJSON(param2));
 
-//                        message = message.substring(5); // strip off the 'Echo ' part
-//                        socketWriter.println(message);  // send message to client
+                        message = message.substring(5); // strip off the 'Echo ' part
+                        socketWriter.println(message);  // send message to client
                     }
                     else if (message.startsWith("Triple"))
                     {
@@ -153,7 +158,7 @@ public class Server {
                     }
                     else
                     {
-                        socketWriter.println("I'm sorry I don't understand :(");
+                        socketWriter.println("incorrect command couldn't understand");
                     }
                 }
 
@@ -271,6 +276,29 @@ public class Server {
             e.printStackTrace();
         }
         return "No Drink found";
+    }
+    public void listFilteredPerfumes(float x)
+    {
+        System.out.println("Showing all perfumes sub " + x + " Euro, ordered by (price/ml), hi->lo");
+
+        try {
+            listDBFiltered = IDrinkDao.findAllDrinkSubXEuro(x);
+            ArrayList<Drink> fetchedFilteredArrList = new ArrayList<Drink>();
+            fetchedFilteredArrList.addAll(listDBFiltered);
+
+            for(int i = 0; i < fetchedFilteredArrList.size(); i++)
+            {
+                queueDBFiltered.add(fetchedFilteredArrList.get(i));
+            }
+            while ( !queueDBFiltered.isEmpty() ) {
+                Drink r = queueDBFiltered.remove();
+                System.out.println(r.toString() + "\t-\tPrice per ml: €" + (Double.valueOf(Math.round((r.getPrice()/r.getSize()) * 100)) / 100) );
+            }
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
     }
 
 
