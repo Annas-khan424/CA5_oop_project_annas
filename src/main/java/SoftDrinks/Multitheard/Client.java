@@ -8,10 +8,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+import SoftDrinks.DTOs.Drink;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import SoftDrinks.DTOs.Drink;
 
 public class Client {
     List<Drink> drinks;
@@ -36,7 +35,7 @@ public class Client {
 
             final String MENU_ITEMS = "\nMAIN MENU COMMANDS\n"
                     + "1. DisplayAllDrink\t\tView All Drinks\n"
-                    + "2. DisplayDrinkById\t\texample: DisplayDrinkById 13\n"
+                    + "2. DisplayDrinkById\t\t DisplayDrinkById \n"
                     + "3. Exit\n"
                     + "Enter Option [1,3]";
             System.out.println("\n" + MENU_ITEMS);
@@ -92,7 +91,7 @@ public class Client {
                     System.out.println("Client message: Response from server: \"" + input + "\"");
                 }
 
-                System.out.println("Please enter new command");
+                System.out.println("Please enter correct command");
                 command = in.nextLine();
                 socketWriter.println(command);
 
