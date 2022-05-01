@@ -8,10 +8,10 @@ public class  Drink implements Comparable<Drink>{
     private String brand;
     private String name;
     private int size;
-    private double price;
+    private float price;
     private int stockAvailable;
 
-    public Drink(int _id, String brand, String name, int size, double price, int stockAvailable)
+    public Drink(int _id, String brand, String name, int size, float price, int stockAvailable)
     {
         this._id = _id;
         this.brand = brand;
@@ -21,7 +21,7 @@ public class  Drink implements Comparable<Drink>{
         this.stockAvailable = stockAvailable;
     }
 
-    public Drink(int _id, String brand, String name)
+    public Drink()
     {
         this._id = _id;
         this.brand = brand;
@@ -76,9 +76,9 @@ public class  Drink implements Comparable<Drink>{
 
     public void setSize(int size) {this.size = size;}
 
-    public double getPrice() {return price;}
+    public float getPrice() {return price;}
 
-    public void setPrice(double price) {this.price = price;}
+    public void setPrice(float price) {this.price = price;}
 
     public int getStockAvailable() {return stockAvailable;}
 

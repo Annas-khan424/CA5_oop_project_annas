@@ -22,4 +22,7 @@ public interface DrinkDaoInterface {
 
     public String findDrinkByIDJSON(String id) throws DaoException;
 
+    public String findDrinkByNameBrandSizeJSON(String recString) throws DaoException;
+
+
 }

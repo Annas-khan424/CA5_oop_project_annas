@@ -1,14 +1,17 @@
 package SoftDrinks.Multitheard;
 
-import SoftDrinks.BusinessClasses.App;
 import SoftDrinks.BusinessClasses.StockBrandComparator;
 import SoftDrinks.DAOs.MySqlDrinkDao;
 import SoftDrinks.DAOs.DrinkDaoInterface;
+import SoftDrinks.DTOs.DataInfo;
 import SoftDrinks.DTOs.Drink;
 import SoftDrinks.DTOs.WholeSaler;
 import SoftDrinks.Exceptions.DaoException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -129,33 +132,93 @@ public class Server {
                         String param2 = tokens[1];
                         System.out.println("param1 == " + param1 + "\tparam2 == " + param2);
 
+                        try {
+                            String res = findDrinkByIDJSON(param2);
 
-                        String res = findDrinkByIDJSON(param2);
-                        System.out.println("res == " + res);
+                            Integer.parseInt(param2);
 
-                        socketWriter.println(findDrinkByIDJSON(param2));
+                            System.out.println("res == " + res);
 
-                        message = message.substring(5); // strip off the 'Echo ' part
-                        socketWriter.println(message);  // send message to client
+                            socketWriter.println(findDrinkByIDJSON(param2));
+
+                            message = message.substring(5);
+                            socketWriter.println(message);
+                        }
+                        catch (Exception e)
+                        {
+                            socketWriter.println("No Drink found");
+                        }
+
+
                     }
-                    else if (message.startsWith("Triple"))
+                    else if (message.startsWith("AddDrinkToDb"))
                     {
-                        message = message.substring(7);
-                        int res = Integer.parseInt(message);
-                        res = res * 3;
-                        socketWriter.println(res);  // send message to client
+
+                        System.out.println("Arriving from server: " + message);
+
+                        String msg = socketReader.readLine();
+
+                        Gson gsonParser = new Gson();
+                        Drink drink1 = gsonParser.fromJson(msg, Drink.class);
+                        try {
+                            IDrinkDao.addDrink(drink1.getBrand(), drink1.getName(), drink1.getSize(), drink1.getPrice(), drink1.getStockAvailable());
+                            String g = drink1.getName() + " " + drink1.getBrand() + " " + drink1.getSize();
+                            String result = IDrinkDao.findDrinkByNameBrandSizeJSON(g);
+                            socketWriter.println(result);
+                        }
+                        catch( DaoException e )
+                        {
+                            e.printStackTrace();
+                            socketWriter.println("Please try again add  Unsuccessful ");
+                        }
                     }
-                    else if (message.startsWith("Add"))
+                    else if (message.startsWith("DelDrinkByID"))
                     {
                         String[] tokens = message.split(" ");
-                        String param1 = tokens[1];
-                        String param2 = tokens[2];
-                        int p1 = Integer.parseInt(param1);
-                        int p2 = Integer.parseInt(param2);
-                        int ans = p1 + p2;
-                        socketWriter.println(ans);
+                        String param1 = tokens[0];
+                        String param2 = tokens[1];
+                        System.out.println("param1 == " + param1 + "\tparam2 == " + param2);
 
+                        String postActionMsg = deleteDrinkByID(param2);
+
+                        socketWriter.println(postActionMsg);
                     }
+                    else if (message.equals("GetSummaryData"))
+                    {
+                        String serialized = findAllDrinkJSON();
+
+                        Type perfList = new TypeToken<ArrayList<Drink>>(){}.getType();
+                        List<Drink> gottenList = new Gson().fromJson(serialized, perfList);
+
+                        String summaryObject = getStats(gottenList);
+
+                        socketWriter.println(summaryObject);
+                    }
+
+//                        String res = findDrinkByIDJSON(param2);
+//                        System.out.println("res == " + res);
+//
+//                        socketWriter.println(findDrinkByIDJSON(param2));
+//                   }
+//                    else if (message.startsWith("Triple"))
+//                    {
+//                        message = message.substring(7);
+//                        int res = Integer.parseInt(message);
+//                        res = res * 3;
+//                        socketWriter.println(res);  // send message to client
+//                    }
+//                    else if (message.startsWith("Add"))
+//                    {
+//                        String[] tokens = message.split(" ");
+//                        String param1 = tokens[1];
+//                        String param2 = tokens[2];
+//                        int p1 = Integer.parseInt(param1);
+//                        int p2 = Integer.parseInt(param2);
+//                        int ans = p1 + p2;
+//                        socketWriter.println(ans);
+//
+//                    }
+//                    else
                     else
                     {
                         socketWriter.println("incorrect command couldn't understand");
@@ -164,7 +227,7 @@ public class Server {
 
                 socket.close();
 
-            } catch (IOException ex)
+            } catch (IOException | DaoException ex)
             {
                 ex.printStackTrace();
             }
@@ -173,16 +236,16 @@ public class Server {
     }
     private void initialize()
     {
-        Drink d1 = new Drink(1,"Coca-Cola","Coke                 ",300,1.30,200);//260
-        Drink d2 = new Drink(2,"Coca-Cola","Coke-zero            ",300,1.30,670);//871
-        Drink d3 = new Drink(3,"Pepsi    ","Pepsi Wild Cherry    ",500,4.30,400);//1720
-        Drink d4 = new Drink(4,"Red Bull ","Red Bull Coconut     ",300,2.30,800);//1840
-        Drink d5 = new Drink(5,"Sprite   ","Sprite Cherry        ",500,6.90,700);//4830
-        Drink d6 = new Drink(6,"Pepsi    ","Pepsi                ",300,5.30,840);//4452
-        Drink d7 = new Drink(7,"Monster  ","Zero-Sugar Ultra Red ",500,3.40,20);//68
-        Drink d8 = new Drink(8,"Fanta    ","Fanta Lemon          ",350,2.89,50);//144.5
-        Drink d9 = new Drink(9,"Monster  ","Mango Loco           ",500,3.00,100);//300
-        Drink d10 = new Drink(10,"Schweppes","Russchian Pink Soda ",200,2.00,10);//200
+        Drink d1 = new Drink(1,"Coca-Cola","Coke                 ",300,(float)1.30,200);//260
+        Drink d2 = new Drink(2,"Coca-Cola","Coke-zero            ",300,(float)1.30,670);//871
+        Drink d3 = new Drink(3,"Pepsi    ","Pepsi Wild Cherry    ",500,(float)4.30,400);//1720
+        Drink d4 = new Drink(4,"Red Bull ","Red Bull Coconut     ",300,(float)2.30,800);//1840
+        Drink d5 = new Drink(5,"Sprite   ","Sprite Cherry        ",500,(float)6.90,700);//4830
+        Drink d6 = new Drink(6,"Pepsi    ","Pepsi                ",300,(float)5.30,840);//4452
+        Drink d7 = new Drink(7,"Monster  ","Zero-Sugar Ultra Red ",500,(float)3.40,20);//68
+        Drink d8 = new Drink(8,"Fanta    ","Fanta Lemon          ",350,(float)2.89,50);//144.5
+        Drink d9 = new Drink(9,"Monster  ","Mango Loco           ",500,(float)3.00,100);//300
+        Drink d10 = new Drink(10,"Schweppes","Russchian Pink Soda ",200,(float)2.00,10);//200
 
         WholeSaler ws1 = new WholeSaler("3928436", "995 Anderson Rest,Missouri", "USA");
         WholeSaler ws2 = new WholeSaler("9562098", "207 O'Connell Divide,Maryland", "England");
@@ -235,17 +298,66 @@ public class Server {
         twoFieldQueue.add(d9);
         twoFieldQueue.add(d10);
     }
-    public String findAllDrinkJSON()
+
+    public String displayList(List <Drink> list)
+    {
+        Gson gson = new Gson();
+
+        String jsonString = gson.toJson(list);
+        return jsonString;
+    }
+    public void displayStockNumMap()
+    {
+        for (Map.Entry<Integer, Drink> entry : StockNumMap.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ".\t Value: " + entry.getValue());
+        }
+    }
+
+    public void displayTwoFieldQueue()
+    {
+        while ( !twoFieldQueue.isEmpty() ) {
+            System.out.println(twoFieldQueue.remove());
+        }
+    }
+
+    public void priorityQueueSequence()
+    {
+        // add two third-priority elements
+        queue.add(drinks.get(6));
+        queue.add(drinks.get(7));
+
+        // add two second-priority level items
+        queue.add(drinks.get(9));
+        queue.add(drinks.get(0));
+
+        // remove and display one element
+        System.out.println("Remove and display a single element");
+        Drink d = queue.remove();
+        System.out.println(d.toString() + "  -  Total Price for Stock Available: €" + (d.getPrice()*d.getStockAvailable()));
+
+        // add one top-priority element
+        queue.add(drinks.get(4));
+
+        // remove and display all elements in priority order
+        System.out.println("\nRemove and display all elements");
+        while ( !queue.isEmpty() ) {
+            Drink r = queue.remove();
+            System.out.println(r.toString() + "\t-\tTotal Price for Stock Available: €" + (Double.valueOf(Math.round((r.getPrice()*r.getStockAvailable()) * 100)) / 100) );
+        }
+    }
+
+    public void findAllDrink()
     {
         try
         {
-            System.out.println("\nCall findAllDrinkJSON()");
-            String jsonString = IDrinkDao.findAllDrinkJSON();
+            System.out.println("\nCall findAllDrink()");
+            List<Drink> Drinks = IDrinkDao.findAllDrink();
 
-            if(jsonString.equals("null"))
-                System.out.println("No Drink found");
+            if( Drinks.isEmpty() )
+                System.out.println("There are no Users");
             else {
-                System.out.println(jsonString);
+                for (Drink drink : Drinks)
+                    System.out.println(drink.toString());
             }
 
         }
@@ -253,8 +365,45 @@ public class Server {
         {
             e.printStackTrace();
         }
+    }
 
-        return "No Drink found";
+
+    public String findAllDrinkJSON() throws DaoException {
+//        try
+//        {
+            System.out.println("\nCall findAllDrinkJSON()");
+            String jsonString = IDrinkDao.findAllDrinkJSON();
+
+
+               return jsonString;
+           // }
+
+//        }
+//        catch( DaoException e )
+//        {
+//            e.printStackTrace();
+//        }
+
+        //return "No Drink found";
+    }
+    public void findDrinkByID(String id)
+    {
+        try
+        {
+            System.out.println("findDrinkByID()");
+            Drink drink = IDrinkDao.findDrinkByID(id);
+
+            if(drink == null)
+                System.out.println("No drink exists with ID: " + id);
+            else {
+                System.out.println(drink);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
     }
 
     public String findDrinkByIDJSON(String id)
@@ -267,7 +416,7 @@ public class Server {
             if(jsonString.equals("null"))
                 System.out.println("No Drink found");
             else {
-                System.out.println(jsonString);
+               return jsonString;
             }
 
         }
@@ -277,9 +426,10 @@ public class Server {
         }
         return "No Drink found";
     }
-    public void listFilteredPerfumes(float x)
+
+    public void listFilteredDrinks(float x)
     {
-        System.out.println("Showing all perfumes sub " + x + " Euro, ordered by (price/ml), hi->lo");
+        System.out.println("Showing all Drinks sub " + x + " Euro, ordered by (price/ml), hi->lo");
 
         try {
             listDBFiltered = IDrinkDao.findAllDrinkSubXEuro(x);
@@ -301,5 +451,103 @@ public class Server {
         }
     }
 
+
+    public void addDrinkToDB()
+    {
+        String brand = "";
+        String name = "";
+        int enteredSize = 0;
+        float enteredPrice = -1;
+        int enteredStockAvalible = -1;
+        Scanner kb = new Scanner(System.in);
+
+
+        while(brand == "") {
+            System.out.println("Please enter Drink Brand: ");
+            brand = kb.nextLine();
+        };
+
+        while(name == "") {
+            System.out.println("Please enter Drink Name: ");
+            name = kb.nextLine();
+        };
+
+        while(enteredSize < 1) {
+            System.out.println("Please enter Drink Size (ml): ");
+            enteredSize = kb.nextInt();
+        };
+
+        while(enteredPrice <= 0) {
+            System.out.println("Please enter Drink price: ");
+            enteredPrice = kb.nextFloat();
+        };
+        ;
+
+        while(enteredStockAvalible <= 0) {
+            System.out.println("Please enter Drink Stock Avalible: ");
+            enteredStockAvalible = kb.nextInt();
+        };
+
+        try {
+            IDrinkDao.addDrink(brand, name, enteredSize, enteredPrice,  enteredStockAvalible);
+            System.out.println("Added Successfully");
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+
+}
+    public String deleteDrinkByID(String id)
+    {
+        try
+        {
+            System.out.println("deleteDrinkByID()");
+            Drink drink1 = IDrinkDao.findDrinkByID(id);
+            IDrinkDao.deleteDrinkByID(id);
+            Drink drink2 = IDrinkDao.findDrinkByID(id);
+            String returnVal= "";
+
+            if(drink2 != null && drink2 == null)
+            {
+                returnVal = "Drink Deleted Successfully";
+                System.out.println(returnVal);
+            }
+            else if(drink2 == null)
+            {
+                returnVal = "The Drink with id = " + id + " is not in the database";
+                System.out.println(returnVal);
+            }
+            else {
+                returnVal = "Drink deletion has failed";
+                System.out.println(returnVal);
+            }
+            return returnVal;
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+            return "NA";
+        }
+    }
+    public String getStats(List<Drink> gottenList)
+    {
+        Gson gson = new Gson();
+
+        int totalStock = 0;
+        int totalProduct = 0;
+        for(Drink p: gottenList)
+        {
+            totalStock = totalStock + p.getStockAvailable();
+            totalProduct++;
+        }
+
+        DataInfo data = new DataInfo(totalStock, totalProduct);
+
+        String jsonString = gson.toJson(data);
+
+        return jsonString;
+    }
 
 }

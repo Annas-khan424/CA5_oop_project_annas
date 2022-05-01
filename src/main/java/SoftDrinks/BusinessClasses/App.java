@@ -166,16 +166,16 @@ public class App {
     }
     private void initialize()
     {
-        Drink d1 = new Drink(1,"Coca-Cola","Coke                 ",300,1.30,200);//260
-        Drink d2 = new Drink(2,"Coca-Cola","Coke-zero            ",300,1.30,670);//871
-        Drink d3 = new Drink(3,"Pepsi    ","Pepsi Wild Cherry    ",500,4.30,400);//1720
-        Drink d4 = new Drink(4,"Red Bull ","Red Bull Coconut     ",300,2.30,800);//1840
-        Drink d5 = new Drink(5,"Sprite   ","Sprite Cherry        ",500,6.90,700);//4830
-        Drink d6 = new Drink(6,"Pepsi    ","Pepsi                ",300,5.30,840);//4452
-        Drink d7 = new Drink(7,"Monster  ","Zero-Sugar Ultra Red ",500,3.40,20);//68
-        Drink d8 = new Drink(8,"Fanta    ","Fanta Lemon          ",350,2.89,50);//144.5
-        Drink d9 = new Drink(9,"Monster  ","Mango Loco           ",500,3.00,100);//300
-        Drink d10 = new Drink(10,"Schweppes","Russchian Pink Soda ",200,2.00,10);//200
+        Drink d1 = new Drink(1,"Coca-Cola","Coke                 ",300,(float)1.30,200);//260
+        Drink d2 = new Drink(2,"Coca-Cola","Coke-zero            ",300,(float)1.30,670);//871
+        Drink d3 = new Drink(3,"Pepsi    ","Pepsi Wild Cherry    ",500,(float)4.30,400);//1720
+        Drink d4 = new Drink(4,"Red Bull ","Red Bull Coconut     ",300,(float)2.30,800);//1840
+        Drink d5 = new Drink(5,"Sprite   ","Sprite Cherry        ",500,(float)6.90,700);//4830
+        Drink d6 = new Drink(6,"Pepsi    ","Pepsi                ",300,(float)5.30,840);//4452
+        Drink d7 = new Drink(7,"Monster  ","Zero-Sugar Ultra Red ",500,(float)3.40,20);//68
+        Drink d8 = new Drink(8,"Fanta    ","Fanta Lemon          ",350,(float)2.89,50);//144.5
+        Drink d9 = new Drink(9,"Monster  ","Mango Loco           ",500,(float)3.00,100);//300
+        Drink d10 = new Drink(10,"Schweppes","Russchian Pink Soda ",200,(float)2.00,10);//200
 
         WholeSaler ws1 = new WholeSaler("3928436", "995 Anderson Rest,Missouri", "USA");
         WholeSaler ws2 = new WholeSaler("9562098", "207 O'Connell Divide,Maryland", "England");
