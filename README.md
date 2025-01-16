@@ -1,4 +1,4 @@
-# JAVA_PROJECT
+# JAVA_PROJECT_Cool_Drinks Database
 
 This project was a part of my second-year project. In this project I have used created a database which includes the data of staff members working in the bar. It is connected to SQL and has a server as well as a client field.
 
