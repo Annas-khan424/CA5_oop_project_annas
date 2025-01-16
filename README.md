@@ -26,20 +26,15 @@ This project was a part of my second-year project. In this project I have used c
 
 
 7. Database menu provides following features:
+>Please Enter the same keyword given below to run this program"
 >
->Display all staff
->
->Display staff by ID
->
->Delete Staff Details by key
->
->Inserting new staff members
->
->Listing staff members using filters
->
->Retrieving all staff details as JSON format
->
->Finding staff by ID in JSON format
+                     "1. DisplayAllDrink"
+                     "2. DisplayDrinkById"
+                     "3. AddDrinkToDb"
+                     "4. deleteDrinkByID"
+                     "5. GetSummaryData"
+                     "6. Exit"
+                     "Enter Option [1,6]";
 >
 8. Implement a client-side menu item that allows a user to select the option “Display Entity by ID” where the Entity is your selected entity class. The client will send a request (command) to the server, along with the user inputted identifier (ID), in accordance with your specified protocol. The server will process the request, use an appropriate DAO to access the entity from the database, convert the entity into JSON representation, and return the JSON via a socket to the client. The client will receive the JSON data, parse the data and instantiate and populate an entity object with the data. The data will then be retrieved from the entity object and displayed, on the client screen in a formatted manner.
 9. Implement a client-side menu option “Display all Entities” that will send a request to the server to obtain a list of all entities. The server will process the request (command) and will use a DAO to retrieve all entities, convert to JSON format, and return the JSON data to the client. The client will parse the JSON data and use it populate a list of entities. All entities will be displayed and neatly formatted, from the list of entity objects.
